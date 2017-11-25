@@ -32,7 +32,7 @@ public class SearchItem extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		if (request.getParameter("username") != null) {
 			String username = request.getParameter("username");
-			out.print("<h1>Hello, " + username +"</h1>");
+			out.print("<html><h1>Hello, " + username +"</h1></html>");
 		}
 		out.flush();
 		out.close();
