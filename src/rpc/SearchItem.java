@@ -1,7 +1,6 @@
 package rpc;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -38,26 +37,31 @@ public class SearchItem extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		double lat = Double.parseDouble(request.getParameter("lat"));
-		double lon = Double.parseDouble(request.getParameter("lon"));
-		// Term can be empty or null.
-		String term = request.getParameter("term");
-		TicketMasterAPI externalAPI = new TicketMasterAPI();
-		List<Item> items = externalAPI.search(lat, lon, term);
-		List<JSONObject> list = new ArrayList<>();
-		try {
-			for (Item item : items) {
-				// Add a thin version of item object
-				JSONObject obj = item.toJSONObject();
-				list.add(obj);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		JSONArray array = new JSONArray(list);
-		RpcHelper.writeJsonArray(response, array);
-	}
+                  // Get parameter from HTTP request
+	    double lat = Double.parseDouble(request.getParameter("lat"));
+	    double lon = Double.parseDouble(request.getParameter("lon"));
+	    String term = request.getParameter("term"); // term can be null
 
+        // call TicketMasterAPI.search to get event data
+	    TicketMasterAPI tmAPI = new TicketMasterAPI();
+	    List<Item> items = tmAPI.search(lat, lon, term);
+
+	    // There should be some saveItem logic here
+	    
+	    // Convert Item list back to JSONArray for client
+	    List<JSONObject> list = new ArrayList<>();
+	    try {
+	      for (Item item : items) {
+	        // Add a thin version of restaurant object
+	        JSONObject obj = item.toJSONObject();
+	        list.add(obj);
+	      }
+	    } catch (Exception e) {
+	    		e.printStackTrace();
+	    }
+	    JSONArray array = new JSONArray(items);
+	    RpcHelper.writeJsonArray(response, array);
+	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)

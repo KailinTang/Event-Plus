@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -16,12 +17,13 @@ import entity.Item;
 import entity.Item.ItemBuilder;
 
 
-public class TicketMasterAPI {
+public class TicketMasterAPI implements ExternalAPI {
 	private static final String API_HOST = "app.ticketmaster.com";
 	private static final String SEARCH_PATH = "/discovery/v2/events.json";
 	private static final String DEFAULT_TERM = "";  // no restriction
 	private static final String API_KEY = "EiLASLC7AGV9o81g7aFgIq3LR199bdcX";
 	
+	@Override
 	public List<Item> search(double lat, double lon, String term) {
 		String url = "http://" + API_HOST + SEARCH_PATH;
 		String latlong = lat + "," + lon;
@@ -150,10 +152,6 @@ public class TicketMasterAPI {
 		return null;
 	}
 
-	private String getImageUrl(JSONObject event) throws JSONException {
-                             // Get from “image” field
-		return null;
-	}
 
 	private String getDescription(JSONObject event) throws JSONException {
 		if (!event.isNull("description")) {
@@ -168,10 +166,28 @@ public class TicketMasterAPI {
 		return null;
 	}
 
-	private Set<String> getCategories(JSONObject event) throws JSONException {
-                             // Get from “classifications” => “segment” => “name”
+
+	private String getImageUrl(JSONObject event) throws JSONException {
+		if (!event.isNull("images")) {
+			JSONArray imagesArray = event.getJSONArray("images");
+			if (imagesArray.length() >= 1) {
+				return getStringFieldOrNull(imagesArray.getJSONObject(0), "url" );
+			}
+		}
 		return null;
 	}
+
+	private Set<String> getCategories(JSONObject event) throws JSONException {
+		Set<String> categories = new HashSet<>();
+		JSONArray classifications = (JSONArray) event.get("classifications");
+		for (int j = 0; j < classifications.length(); j++) {
+			JSONObject classification = classifications.getJSONObject(j);
+			JSONObject segment = classification.getJSONObject("segment");
+			categories.add(segment.getString("name"));
+		}
+		return categories;
+	}
+
 
 	private String getStringFieldOrNull(JSONObject event, String field) throws JSONException {
 		return event.isNull(field) ? null : event.getString(field);
