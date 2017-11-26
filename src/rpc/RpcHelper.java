@@ -22,7 +22,6 @@ public class RpcHelper {
 		}
 	}
 
-	
 	public static void writeJsonArray(HttpServletResponse response, JSONArray array) {
 		try {
 			response.setContentType("application/json");
