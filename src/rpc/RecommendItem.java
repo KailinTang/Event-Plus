@@ -38,7 +38,7 @@ public class RecommendItem extends HttpServlet {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		RpcHelper.writeJsonObject(response, array);
+		RpcHelper.writeJsonArray(response, array);
 	}
 
 	/**
