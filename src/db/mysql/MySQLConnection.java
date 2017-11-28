@@ -1,11 +1,13 @@
 package db.mysql;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import db.DBConnection;
@@ -39,14 +41,38 @@ public class MySQLConnection implements DBConnection {
 
 	@Override
 	public void setFavoriteItems(String userId, List<String> itemIds) {
-		// TODO Auto-generated method stub
-
+		if (conn == null) {
+			return;
+		}
+		String query = "INSERT INTO history (user_id, item_id) VALUES (?, ?)";
+		try {
+			PreparedStatement statement = conn.prepareStatement(query);
+			for (String itemId : itemIds) {
+				statement.setString(1, userId);
+				statement.setString(2, itemId);
+				statement.execute();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void unsetFavoriteItems(String userId, List<String> itemIds) {
-		// TODO Auto-generated method stub
-
+		if (conn == null) {
+			return;
+		}
+		String query = "DELETE FROM history WHERE user_id = ? and item_id = ?";
+		try {
+			PreparedStatement statement = conn.prepareStatement(query);
+			for (String itemId : itemIds) {
+				statement.setString(1, userId);
+				statement.setString(2, itemId);
+				statement.execute();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -63,8 +89,22 @@ public class MySQLConnection implements DBConnection {
 
 	@Override
 	public Set<String> getCategories(String itemId) {
-		// TODO Auto-generated method stub
-		return null;
+		if (conn == null) {
+			return null;
+		}
+		Set<String> categories = new HashSet<>();
+		try {
+			String sql = "SELECT category from categories WHERE item_id = ? ";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, itemId);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				categories.add(rs.getString("category"));
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return categories;
 	}
 
 	@Override
@@ -121,13 +161,41 @@ public class MySQLConnection implements DBConnection {
 
 	@Override
 	public String getFullname(String userId) {
-		// TODO Auto-generated method stub
-		return null;
+		if (conn == null) {
+			return null;
+		}
+		String name = "";
+		try {
+			String sql = "SELECT first_name, last_name from users WHERE user_id = ?";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, userId);
+			ResultSet rs = statement.executeQuery();
+			if (rs.next()) {
+				name += String.join(" ", rs.getString("first_name"), rs.getString("last_name"));
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return name;
 	}
 
 	@Override
 	public boolean verifyLogin(String userId, String password) {
-		// TODO Auto-generated method stub
+		if (conn == null) {
+			return false;
+		}
+		try {
+			String sql = "SELECT user_id from users WHERE user_id = ? and password = ?";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, userId);
+			statement.setString(2, password);
+			ResultSet rs = statement.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 		return false;
 	}
 

@@ -68,10 +68,30 @@ public class ItemHistory extends HttpServlet {
 		}
 	}
 
+	/**
+	 * @see HttpServlet#doDelete(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		try {
+			JSONObject input = RpcHelper.readJsonObject(request);
+			String userId = input.getString("user_id");
+			JSONArray array = (JSONArray) input.get("favorite");
+
+			List<String> histories = new ArrayList<>();
+			for (int i = 0; i < array.length(); i++) {
+				String itemId = (String) array.get(i);
+				histories.add(itemId);
+			}
+
+			DBConnection conn = DBConnectionFactory.getDBConnection();
+			conn.unsetFavoriteItems(userId, histories);
+
+			RpcHelper.writeJsonObject(response, new JSONObject().put("result", "SUCCESS"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
