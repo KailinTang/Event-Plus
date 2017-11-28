@@ -12,6 +12,7 @@ import java.sql.SQLException;
 
 import db.DBConnection;
 import entity.Item;
+import entity.Item.ItemBuilder;
 import external.ExternalAPI;
 import external.ExternalAPIFactory;
 
@@ -77,21 +78,74 @@ public class MySQLConnection implements DBConnection {
 
 	@Override
 	public Set<String> getFavoriteItemIds(String userId) {
-		// TODO Auto-generated method stub
-		return null;
+		if (conn == null) {
+			return null;
+		}
+		Set<String> itemIds = new HashSet<>();
+		try {
+			String sql = "SELECT item_id from history WHERE user_id = ?";
+			PreparedStatement statement = conn.prepareStatement(sql);
+			statement.setString(1, userId);
+			ResultSet rs = statement.executeQuery();
+			while (rs.next()) {
+				String itemId = rs.getString("item_id");
+				itemIds.add(itemId);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return itemIds;
 	}
 
 	@Override
 	public Set<Item> getFavoriteItems(String userId) {
-		// TODO Auto-generated method stub
-		return null;
+		if (conn == null) {
+			return null;
+		}
+		Set<String> itemIds = getFavoriteItemIds(userId);
+		Set<Item> favoriteItems = new HashSet<>();
+		try {
+
+			for (String itemId : itemIds) {
+				String sql = "SELECT * from items WHERE item_id = ? ";
+				PreparedStatement statement = conn.prepareStatement(sql);
+				statement.setString(1, itemId);
+				ResultSet rs = statement.executeQuery();
+				ItemBuilder builder = new ItemBuilder();
+
+				// Because itemId is unique and given one item id there should
+				// have
+				// only one result returned.
+				if (rs.next()) {
+					builder.setItemId(rs.getString("item_id"));
+					builder.setName(rs.getString("name"));
+					builder.setCity(rs.getString("city"));
+					builder.setState(rs.getString("state"));
+					builder.setCountry(rs.getString("country"));
+					builder.setZipcode(rs.getString("zipcode"));
+					builder.setRating(rs.getDouble("rating"));
+					builder.setAddress(rs.getString("address"));
+					builder.setLatitude(rs.getDouble("latitude"));
+					builder.setLongitude(rs.getDouble("longitude"));
+					builder.setDescription(rs.getString("description"));
+					builder.setSnippet(rs.getString("snippet"));
+					builder.setSnippetUrl(rs.getString("snippet_url"));
+					builder.setImageUrl(rs.getString("image_url"));
+					builder.setUrl(rs.getString("url"));
+				}
+
+				Set<String> categories = getCategories(itemId);
+				builder.setCategories(categories);
+				favoriteItems.add(builder.build());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return favoriteItems;
 	}
 
 	@Override
 	public Set<String> getCategories(String itemId) {
-		if (conn == null) {
-			return null;
-		}
 		Set<String> categories = new HashSet<>();
 		try {
 			String sql = "SELECT category from categories WHERE item_id = ? ";
