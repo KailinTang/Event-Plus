@@ -19,6 +19,7 @@ public class MySQLConnection implements DBConnection {
 
 	public MySQLConnection() {
 		try {
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			conn = DriverManager.getConnection(MySQLDBUtil.URL);
 		} catch (Exception e) {
 			e.printStackTrace();
