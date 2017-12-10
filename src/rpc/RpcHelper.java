@@ -47,6 +47,19 @@ public class RpcHelper {
 		}
 	}
 
+	// Converts a list of Item objects to JSONArray.
+	public static JSONArray getJSONArray(List<Item> items) {
+		JSONArray result = new JSONArray();
+		try {
+			for (Item item : items) {
+				result.put(item.toJSONObject());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 	// Writes a JSONArray to http response.
 	public static void writeJsonArray(HttpServletResponse response, JSONArray array) {
 		try {
@@ -61,16 +74,4 @@ public class RpcHelper {
 		}
 	}
 
-	// Converts a list of Item objects to JSONArray.
-	public static JSONArray getJSONArray(List<Item> items) {
-		JSONArray result = new JSONArray();
-		try {
-			for (Item item : items) {
-				result.put(item.toJSONObject());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
 }
