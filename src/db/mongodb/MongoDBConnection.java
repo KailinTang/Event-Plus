@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.bson.Document;
 
-import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoDatabase;
@@ -142,13 +141,20 @@ public class MongoDBConnection implements DBConnection {
 
 	@Override
 	public String getFullname(String userId) {
-		// TODO Auto-generated method stub
-		return null;
+		FindIterable<Document> iterable = db.getCollection("users").find(new Document("user_id", userId));
+		Document document = iterable.first();
+		String firstName = document.getString("first_name");
+		String lastName = document.getString("last_name");
+		return firstName + " " + lastName;
+
 	}
 
 	@Override
 	public boolean verifyLogin(String userId, String password) {
-		// TODO Auto-generated method stub
-		return false;
+		FindIterable<Document> iterable = db.getCollection("users").find(new Document("user_id", userId));
+		Document document = iterable.first();
+		return document.getString("password").equals(password);
+
 	}
+
 }
