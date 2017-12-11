@@ -104,7 +104,6 @@ public class MongoDBConnection implements DBConnection {
 	public Set<String> getCategories(String itemId) {
 		Set<String> categories = new HashSet<>();
 		FindIterable<Document> iterable = db.getCollection("items").find(eq("item_id", itemId));
-
 		if (iterable.first().containsKey("categories")) {
 			@SuppressWarnings("unchecked")
 			List<String> list = (List<String>) iterable.first().get("categories");
