@@ -20,7 +20,7 @@ import db.mongodb.MongoDBUtil;
 public class FindPeak {
 	private static final String COLLECTION_NAME = "logs";
 	private static final String TIME = "time";
-	private static final String URL_PREFIX = "/Titan";
+	private static final String URL_PREFIX = "/EventPlus";
 	private static List<LocalTime> buckets = initBuckets();
 
 	public static void main(String[] args) {
@@ -30,7 +30,7 @@ public class FindPeak {
 
 		// Construct mapper function
 		// function() {
-		// if (this.url.startswith("/Titan")) {
+		// if (this.url.startswith("/EventPlus")) {
 		// emit(this.time.substring(0, 5), 1);
 		// }
 		// }
