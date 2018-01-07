@@ -50,7 +50,7 @@ ul {
  */
 .container {
   margin:    60px auto;
-  max-width: 1000px;
+  max-width: 1200px;
   min-width: 600px;
 }
 
@@ -66,16 +66,16 @@ ul {
 }
 
 .container > header p {
-  border-left:  1px solid #FFFFFF;
-  font-weight:  400;
-  font-size:    2em;
+  border-left:  7px solid #F3BB43;
+  font-weight:  700;
+  font-size:    4em;
   line-height:  1em;
-  margin-left:  220px;
-  padding-left: 5px;
+  margin-left:  200px;
+  padding-left: 10px;
 }
 
 .container > header span {
-  color: #FBAF41;
+  color: #F3BB43;
 }
 
 /**
@@ -83,6 +83,51 @@ ul {
  */
 .main-section {
   background: #F3BB43;
+}
+
+#welcome {
+    font-size: 1.5em;
+    font-weight: 700;
+    text-align: center;
+    background:  #DF574B;
+}
+
+#username-input {
+    font-size: 1.5em;
+    font-weight: 700;
+    text-align: center;
+}
+
+#username {
+  width: 20%;
+  height: 2em;
+}
+
+#password-input {
+    font-size: 1.5em;
+    font-weight: 700;
+    text-align: center;
+}
+
+#password {
+  width: 20%;
+  height: 2em;
+}
+
+#login-input {
+  text-align: center;
+  margin: 12px auto;
+}
+
+#login-btn {
+    height: 25pt;
+    width: 60pt;
+    font-size: 1.5em;
+    font-weight:  700;
+    background:  #DF574B;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 5px;
 }
 
 /**
@@ -239,3 +284,5 @@ footer ul {
 footer ul li {
   flex: 1;
 }
+
+
