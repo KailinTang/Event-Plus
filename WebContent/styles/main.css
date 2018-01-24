@@ -130,6 +130,24 @@ ul {
     border-radius: 5px;
 }
 
+#logout-input {
+  text-align: center;
+  margin: 12px auto;
+}
+
+#logout-btn {
+	height: 15pt;
+    width: 40pt;
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 1em;
+    font-weight:  300;
+    background:  #F3BB43;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 3px;
+}
+
 /**
  * aside
  */
